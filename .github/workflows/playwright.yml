@@ -1,35 +1,33 @@
 name: Playwright Tests
-
-on: [push, pull_request]
-
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
 jobs:
   test:
+    timeout-minutes: 60
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
       with:
-        node-version: '14'  # or any version you require
-
+        node-version: lts/*
     - name: Install dependencies
-      run: npm install
-
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
     - name: Run Playwright tests
-      run: npx playwright test --reporter=html
-
-    - name: Upload Test Report
-      uses: actions/upload-artifact@v2
+      run: npx playwright test
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
       with:
         name: playwright-report
-        path: playwright-report  # Adjust if your report path is different
+        path: playwright-report/
+        retention-days: 30
 
     - name: Send email notification
       uses: dawidd6/action-send-mail@v3
-      # uses: Krishna-M-2003/email-Testing
       with:
         # Configure your email settings
         server_address: smtp.your-email-provider.com
@@ -42,32 +40,3 @@ jobs:
         to: recipient@example.com  # Change to your recipient
         from: sender@example.com  # Change to your sender
         attachments: playwright-report/index.html  # Path to your report file
-
-
-# name: Playwright Tests
-# on:
-#   push:
-#     branches: [ main, master ]
-#   pull_request:
-#     branches: [ main, master ]
-# jobs:
-#   test:
-#     timeout-minutes: 60
-#     runs-on: ubuntu-latest
-#     steps:
-#     - uses: actions/checkout@v4
-#     - uses: actions/setup-node@v4
-#       with:
-#         node-version: lts/*
-#     - name: Install dependencies
-#       run: npm ci
-#     - name: Install Playwright Browsers
-#       run: npx playwright install --with-deps
-#     - name: Run Playwright tests
-#       run: npx playwright test
-#     - uses: actions/upload-artifact@v4
-#       if: ${{ !cancelled() }}
-#       with:
-#         name: playwright-report
-#         path: playwright-report/
-#         retention-days: 30
