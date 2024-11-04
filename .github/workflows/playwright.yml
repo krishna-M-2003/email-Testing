@@ -25,3 +25,17 @@ jobs:
         name: playwright-report
         path: playwright-report/
         retention-days: 30
+    - name: Send email notification
+      uses: dawidd6/action-send-mail@v3
+      with:
+            # Configure your email settings
+            server_address: smtp.your-email-provider.com
+            server_port: 587
+            username: ${{ secrets.FST_SECRET }}  # Add your email username in GitHub Secrets
+            password: ${{ secrets.FST_SECRET }}  # Add your email password in GitHub Secrets
+            subject: Playwright Test Report
+            body: |
+              The Playwright test run has completed. Please find the report attached.
+            to: m.krishna@faaztechsolutions.com  # Change to your recipient
+            from: m.krishna@faaztechsolutions.com  # Change to your sender
+            attachments: playwright-report/index.html  # Path to your report file
