@@ -40,3 +40,4 @@ jobs:
         to: m.krishna@faaztechsolutions.com  # Change to your recipient
         from: m.krishna@faaztechsolutions.com  # Change to your sender
         attachments: playwright-report/index.html  # Path to your report file
+        
